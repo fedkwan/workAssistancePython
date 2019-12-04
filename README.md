@@ -1,0 +1,2 @@
+# workAssistancePython
+一些能帮助大家更好完成日常工作的python脚本
