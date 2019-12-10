@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.8.0/css/bulma.min.css">
+	<link rel="shortcut icon" href="favicon.ico">
+	<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+	<meta charset="utf-8">
+	<title>你好，我是关小开。</title>
+	<style>
+		* {
+			margin: 0 auto;
+			font-family: "微软雅黑";
+		}
+
+		html {
+			height: 100%;
+		}
+
+		body {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+			height: 100%;
+			background-color: #EEEEEE;
+		}
+
+		#container {
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			align-items: center;
+			width: 1440px;
+			height: auto;
+		}
+
+		#titleDiv {
+			margin-top: 30px;
+			height: 60px;
+			line-height: 60px;
+			font-size: 48px;
+		}
+
+		#picDiv {
+			margin: 20px auto;
+		}
+
+		#linksDiv {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+			margin-bottom: 30px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="container" class="box">
+		<div id="titleDiv" class="content">
+			<span>你好，我是关小开。</span>
+		</div>
+		<div id="picDiv">
+			<img width="1200px" height="400px" src="pic.jpg">
+		</div>
+		<div id="linksDiv" class="buttons">
+			<a class="button is-medium is-rounded is-warning is-focused" target="_blank"
+				href="http://www.guanxiaokai.com/blog">
+				<!--<span class="icon is-medium">
+					<i class="fab fa-blog"></i>
+				</span>-->
+				<span>博客</span>
+			</a>
+			<a class="button is-medium is-rounded is-warning is-focused" target="_blank"
+				href="http://www.github.com/fedkwan/">
+				<span class="icon is-medium">
+					<i class="fab fa-github"></i>
+				</span>
+				<span>Github</span>
+			</a>
+			<a class="button is-medium is-rounded is-danger is-focused" target="_blank"
+				href="http://www.guanxiaokai.com/drawAngle">
+				<!--<span class="icon is-medium">
+					<i class="fab fa-angle-left"></i>
+				</span>-->
+				<span>在线画角</span>
+			</a>
+		</div>
+	</div>
+</body>
+
+</html>
