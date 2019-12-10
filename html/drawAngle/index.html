@@ -96,6 +96,10 @@
 					<text id="degree" x="0" y="0">
 						<tspan font-weight="bold" font-size="25px" fill="#000000">30°</tspan>
 					</text>
+					<line id="arc90a" x1="0" y1="0" x2="0" y2="0" class="lineStyle"
+						style="stroke: #000000; stroke-width: 2px; display: hidden;" />
+					<line id="arc90b" x1="0" y1="0" x2="0" y2="0" class="lineStyle"
+						style="stroke: #000000; stroke-width: 2px; display: hidden;" />
 				</svg>
 			</div>
 
@@ -131,44 +135,44 @@
 							</div>
 
 							<div class="pure-control-group">
-								<label for="lineColor">线条颜色</label>
+								<label for="lineColor">颜色</label>
 								<input id="lineColor" type="color" onchange="svgRefresh()">
 							</div>
 
 							<div class="pure-control-group">
 								<label for="firstAngle">第一条边夹角</label>
-								<input id="firstAngle" placeholder="30" type="tel" min="0" max="720" style="width: 186px;"
-									oninput="value=this.value.replace(/\D/g,'')">
+								<input id="firstAngle" placeholder="30" type="tel" min="0" max="720"
+									style="width: 186px;" oninput="value=this.value.replace(/\D/g,'')">
 								<span class="arcSpan">°</span>
 							</div>
 
 							<div class="pure-control-group">
 								<label for="secondAngle">第二条边夹角</label>
-								<input id="secondAngle" placeholder="60" type="tel" min="0" max="720" style="width: 186px;"
-									oninput="value=this.value.replace(/\D/g,'')">
+								<input id="secondAngle" placeholder="60" type="tel" min="0" max="720"
+									style="width: 186px;" oninput="value=this.value.replace(/\D/g,'')">
 								<span class="arcSpan">°</span>
 							</div>
 
 							<div class="pure-control-group" style="margin: 22px auto;">
-								<label for="circleR">圆弧半径</label>
-								<input id="circleR" value="40" type="range" min="20" max="60" style="width: 196px;"
+								<label for="arcR">角度标识半径</label>
+								<input id="arcR" value="40" type="range" min="20" max="60" style="width: 196px;"
 									onmousemove="svgRefresh()">
 							</div>
 
 							<div class="pure-control-group" style="margin: 22px auto;">
-								<label for="degreeX">角度标识x坐标</label>
+								<label for="degreeX">数字标识 x 坐标</label>
 								<input id="degreeX" value="310" type="range" min="0" max="500" step="5"
 									style="width: 196px;" onmousemove="svgRefresh()">
 							</div>
 
 							<div class="pure-control-group" style="margin: 22px auto;">
-								<label for="degreeY">角度标识y坐标</label>
+								<label for="degreeY">数字标识 y 坐标</label>
 								<input id="degreeY" value="185" type="range" min="0" max="500" step="5"
 									style="width: 196px;" onmousemove="svgRefresh()">
 							</div>
 
 							<div class="pure-control-group" style="margin: 22px auto;">
-								<label for="degreeLabelFontSize">角度标识大小</label>
+								<label for="degreeLabelFontSize">数字标识大小</label>
 								<input id="degreeLabelFontSize" value="25" type="range" min="20" max="50"
 									style="width: 196px;" onmousemove="svgRefresh()">
 							</div>
@@ -191,83 +195,140 @@
 
 	function svgRefresh() {
 
-		var svgWidth, svgHeight, lineLength, lineWeight, firstAngle, secondAngle, circleR;
-
-		//开始设定
-		//画布大小和viewBox大小
+		//获取、设置：画布大小和 viewBox 大小
+		var svgWidth, svgHeight;
 		$("#svgWidth").val() == "" ? svgWidth = $("#svgWidth").attr("placeholder") : svgWidth = $("#svgWidth").val();
 		$("#svgHeight").val() == "" ? svgHeight = $("#svgHeight").attr("placeholder") : svgHeight = $("#svgHeight").val();
 
-		//边的样式
-		//长度
-		$("#lineLength").val() == "" ? lineLength = $("#lineLength").attr("placeholder") : lineLength = $("#lineLength").val();
-		//线条粗细
-		$("#lineWeight").val() == "" ? lineWeight = $("#lineWeight").attr("placeholder") : lineWeight = $("#lineWeight").val();
-		//颜色
-		lineColor = $("#lineColor").val();
-
-		//两个角的大小
-		$("#firstAngle").val() == "" ? firstAngle = $("#firstAngle").attr("placeholder") : firstAngle = $("#firstAngle").val();
-		$("#secondAngle").val() == "" ? secondAngle = $("#secondAngle").attr("placeholder") : secondAngle = $("#secondAngle").val();
-
-		//要画的角的大小
-		var subAngle = secondAngle - firstAngle
-
-		//圆弧的半径
-		$("#circleR").val() == "" ? circleR = $("#circleR").attr("placeholder") : circleR = $("#circleR").val();
-
-		//标识位置
-		var degreeX = $("#degreeX").val();
-		var degreeY = $("#degreeY").val();
-		//标识字体大小
-		var degreeLabelFontSize = $("#degreeLabelFontSize").val();
-
-		//开始修改
-		//修改画布大小
-		$("#svgItem").attr("width", svgWidth);
-		$("#svgItem").attr("height", svgHeight);
+		$("#svgItem").attr({
+			"width": svgWidth,
+			"height": svgHeight
+		});
+		//---- jquery 会将 viewBox 变成全小写 viewbox，要用原生的方式
 		document.getElementById("svgItem").setAttribute("viewBox", "0 0 " + svgWidth + " " + svgHeight);
 		$("#degreeX").attr("max", svgWidth);
 		$("#degreeY").attr("max", svgHeight);
-		$("#degree").attr("x", degreeX);
-		$("#degree").attr("y", degreeY);
 
-		//修改边的样式
+		//****************************************************************************************************
+
+		//获取、设置：线条粗细，线条颜色
+		var lineWeight, lineColor;
+		$("#lineWeight").val() == "" ? lineWeight = $("#lineWeight").attr("placeholder") : lineWeight = $("#lineWeight").val();
+		lineColor = $("#lineColor").val();
+
 		$(".lineStyle").attr("style", "stroke: " + lineColor + "; stroke-width: " + lineWeight + "px; ")
 
+		//****************************************************************************************************
+
 		//画两条边
-		$("#firstLine").attr("x1", svgWidth / 2);
-		$("#firstLine").attr("y1", svgHeight / 2);
-		$("#firstLine").attr("x2", svgWidth / 2 + Math.cos(firstAngle * Math.PI / 180) * lineLength);
-		$("#firstLine").attr("y2", svgHeight / 2 - Math.sin(firstAngle * Math.PI / 180) * lineLength);
-		$("#secondLine").attr("x1", svgWidth / 2);
-		$("#secondLine").attr("y1", svgHeight / 2);
-		$("#secondLine").attr("x2", svgWidth / 2 + Math.cos(secondAngle * Math.PI / 180) * lineLength);
-		$("#secondLine").attr("y2", svgHeight / 2 - Math.sin(secondAngle * Math.PI / 180) * lineLength);
 
-		//画圆弧
-		$("#circleArc").attr("x", svgWidth / 2);
-		$("#circleArc").attr("y", svgHeight / 2);
-		$("#circleArc").attr("r", circleR);
+		//获取：边长度
+		var lineLength
+		$("#lineLength").val() == "" ? lineLength = $("#lineLength").attr("placeholder") : lineLength = $("#lineLength").val();
 
-		//根据角的大小设置圆弧的内外
-		var arcInOutA, arcInOutB;
-		if (subAngle > 0 && subAngle <= 180) {
-			arcInOutA = 0;
-			arcInOutB = 0;
+		//获取：两个角的大小；计算：要画的角的大小
+		var firstAngle, secondAngle;
+		$("#firstAngle").val() == "" ? firstAngle = $("#firstAngle").attr("placeholder") : firstAngle = $("#firstAngle").val();
+		$("#secondAngle").val() == "" ? secondAngle = $("#secondAngle").attr("placeholder") : secondAngle = $("#secondAngle").val();
+		var subAngle = secondAngle - firstAngle
+		var midAngle = parseInt(subAngle) / 2 + parseInt(firstAngle)
+
+		//绘制：两条边
+		$("#firstLine").attr({
+			"x1": svgWidth / 2,
+			"y1": svgHeight / 2,
+			"x2": svgWidth / 2 + Math.cos(firstAngle * Math.PI / 180) * lineLength,
+			"y2": svgHeight / 2 - Math.sin(firstAngle * Math.PI / 180) * lineLength
+		});
+
+		$("#secondLine").attr({
+			"x1": svgWidth / 2,
+			"y1": svgHeight / 2,
+			"x2": svgWidth / 2 + Math.cos(secondAngle * Math.PI / 180) * lineLength,
+			"y2": svgHeight / 2 - Math.sin(secondAngle * Math.PI / 180) * lineLength
+		});
+
+		//****************************************************************************************************
+
+		//画角度标识
+
+		//获取：角度标识的边长
+		$("#arcR").val() == "" ? arcR = $("#arcR").attr("placeholder") : arcR = $("#arcR").val();
+
+		//获取：角度标识起点、终点
+		var startX = svgWidth / 2 + Math.cos(firstAngle * Math.PI / 180) * arcR;
+		var startY = svgHeight / 2 - Math.sin(firstAngle * Math.PI / 180) * arcR;
+		var endX = svgWidth / 2 + Math.cos(secondAngle * Math.PI / 180) * arcR;
+		var endY = svgHeight / 2 - Math.sin(secondAngle * Math.PI / 180) * arcR;
+		//----平分线上的点
+		var midX = svgWidth / 2 + Math.cos(midAngle * Math.PI / 180) * Math.sqrt(arcR * arcR * 2);
+		var midY = svgHeight / 2 - Math.sin(midAngle * Math.PI / 180) * Math.sqrt(arcR * arcR * 2);
+
+		if (subAngle == 90) {
+
+			$("#arc90a").show();
+			$("#arc90b").show();
+			$("#circleArc").hide();
+
+			//绘制：直角角度标识
+			$("#arc90a").attr({
+				"x1": startX,
+				"y1": startY,
+				"x2": midX,
+				"y2": midY
+			});
+			$("#arc90b").attr({
+				"x1": endX,
+				"y1": endY,
+				"x2": midX,
+				"y2": midY
+			});
 		}
-		if (subAngle > 180 && subAngle <= 360) {
-			arcInOutA = 1;
-			arcInOutB = 0;
+		else {
+
+			$("#circleArc").show();
+			$("#arc90a").hide();
+			$("#arc90b").hide();
+
+			//设置：圆弧角度标识的内外
+			var arcInOutA, arcInOutB;
+			if (subAngle > 0 && subAngle <= 180) {
+				arcInOutA = 0;
+				arcInOutB = 0;
+			}
+			if (subAngle > 180 && subAngle <= 360) {
+				arcInOutA = 1;
+				arcInOutB = 0;
+			}
+
+			//绘制：圆弧角度标识
+			$("#circleArc").attr({
+				"d": "M" + startX + ", " + startY + " A" + arcR + ", " + arcR + ", 0, " + arcInOutA + ", " + arcInOutB + ", " + endX + ", " + endY,
+				"x": svgWidth / 2,
+				"y": svgHeight / 2,
+				"r": arcR
+			});
+
 		}
 
-		$("#circleArc").attr("d", "M" + (svgWidth / 2 + Math.cos(firstAngle * Math.PI / 180) * circleR) + ", " + (svgHeight / 2 - Math.sin(firstAngle * Math.PI / 180) * circleR) + " A" + circleR + ", " + circleR + ", 0, " + arcInOutA + ", " + arcInOutB + ", " + (svgWidth / 2 + Math.cos(secondAngle * Math.PI / 180) * circleR) + ", " + (svgHeight / 2 - Math.sin(secondAngle * Math.PI / 180) * circleR));
+		//****************************************************************************************************
 
-		//标识颜色
-		$("#degree tspan").attr("fill", lineColor);
-		//标识字体大小
-		$("#degree tspan").attr("font-size", degreeLabelFontSize + "px");
-		//标识
+		//画数字标识
+
+		//设置：数字标识坐标
+		var degreeX = $("#degreeX").val();
+		var degreeY = $("#degreeY").val();
+		$("#degree").attr({
+			"x": degreeX,
+			"y": degreeY
+		});
+
+		//设置：数字标识颜色、字体大小、内容文字
+		var degreeLabelFontSize = $("#degreeLabelFontSize").val();
+		$("#degree tspan").attr({
+			"fill": lineColor,
+			"font-size": degreeLabelFontSize + "px"
+		});
 		$("#degree tspan").text(subAngle + "°");
 	}
 
